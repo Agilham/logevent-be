@@ -9,7 +9,7 @@ const config: Config.InitialOptions = {
   coverageReporters: ['lcov', 'text'],
   reporters: [
     'default',
-    ['jest-sonar-reporter', {
+    ['jest-sonar', {
       outputDirectory: 'coverage',
       outputName: 'sonar-report.xml',
     }],
