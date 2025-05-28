@@ -3,6 +3,7 @@
 // dependency modules
 import express from 'express';
 import cors from 'cors';
+import client from 'prom-client';
 // self-defined modules
 import adminController from './controllers/admin.controller';
 import albumController from './controllers/album.controller';
@@ -48,6 +49,14 @@ app.use('/settings', settingController.getRoutes());
 app.use('/vendors', vendorController.getRoutes());
 app.use('/visits', visitController.getRoutes());
 app.use('/wishlists', wishlistController.getRoutes());
+
+const register = new client.Registry();
+client.collectDefaultMetrics({ register });
+
+app.get('/metrics', async (_req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
