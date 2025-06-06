@@ -6,7 +6,7 @@ import eventRepository from '../../repositories/event.repository'; // Adjust pat
 import { DeepMockProxy } from 'jest-mock-extended';
 
 // Mock the eventRepository module
-jest.mock('../../src/repositories/event.repository');
+jest.mock('../../repositories/event.repository');
 
 describe('EventController', () => {
   let mockRequest: Partial<Request>;

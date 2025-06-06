@@ -6,7 +6,7 @@ import categoryRepository from '../../repositories/category.repository'; // Adju
 import { DeepMockProxy } from 'jest-mock-extended';
 
 // Mock the categoryRepository module
-jest.mock('../../src/repositories/category.repository');
+jest.mock('../../repositories/category.repository');
 
 describe('CategoryController', () => {
   let mockRequest: Partial<Request>;

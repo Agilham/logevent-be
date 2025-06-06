@@ -9,11 +9,11 @@ import { DeepMockProxy } from 'jest-mock-extended'; // For type-safe mocking
 
 // Mock the entire repository and utility modules
 // This tells Jest to replace the actual implementations with mock versions
-jest.mock('../../src/repositories/cart.repository');
-jest.mock('../../src/repositories/item.repository');
-jest.mock('../../src/repositories/order.repository');
-jest.mock('../../src/repositories/user.repository');
-jest.mock('../../src/utils/nodemailer');
+jest.mock('../../repositories/cart.repository');
+jest.mock('../../repositories/item.repository');
+jest.mock('../../repositories/order.repository');
+jest.mock('../../repositories/user.repository');
+jest.mock('../../utils/nodemailer');
 
 describe('OrderController', () => {
   let mockRequest: Partial<Request>;

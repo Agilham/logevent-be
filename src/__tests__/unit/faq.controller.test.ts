@@ -6,7 +6,7 @@ import faqRepository from '../../repositories/faq.repository'; // Adjust path if
 import { DeepMockProxy } from 'jest-mock-extended';
 
 // Mock the faqRepository module
-jest.mock('../../src/repositories/faq.repository');
+jest.mock('../../repositories/faq.repository');
 
 describe('FaqController', () => {
   let mockRequest: Partial<Request>;

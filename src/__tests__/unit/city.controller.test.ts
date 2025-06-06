@@ -6,7 +6,7 @@ import cityRepository from '../../repositories/city.repository'; // Adjust path 
 import { DeepMockProxy } from 'jest-mock-extended';
 
 // Mock the cityRepository module
-jest.mock('../../src/repositories/city.repository');
+jest.mock('../../repositories/city.repository');
 
 describe('CityController', () => {
   let mockRequest: Partial<Request>;

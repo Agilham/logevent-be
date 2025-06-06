@@ -6,7 +6,7 @@ import cartRepository from '../../repositories/cart.repository'; // Adjust path 
 import { DeepMockProxy } from 'jest-mock-extended';
 
 // Mock the cartRepository module
-jest.mock('../../src/repositories/cart.repository');
+jest.mock('../../repositories/cart.repository');
 
 describe('CartController', () => {
   let mockRequest: Partial<Request>;

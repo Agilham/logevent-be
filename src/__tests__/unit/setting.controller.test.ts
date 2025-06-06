@@ -6,7 +6,7 @@ import settingRepository from '../../repositories/setting.repository'; // Adjust
 import { DeepMockProxy } from 'jest-mock-extended';
 
 // Mock the settingRepository module
-jest.mock('../../src/repositories/setting.repository');
+jest.mock('../../repositories/setting.repository');
 
 describe('SettingController', () => {
   let mockRequest: Partial<Request>;

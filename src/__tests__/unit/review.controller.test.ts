@@ -6,7 +6,7 @@ import reviewRepository from '../../repositories/review.repository'; // Adjust p
 import { DeepMockProxy } from 'jest-mock-extended';
 
 // Mock the reviewRepository module
-jest.mock('../../src/repositories/review.repository');
+jest.mock('../../repositories/review.repository');
 
 describe('ReviewController', () => {
   let mockRequest: Partial<Request>;

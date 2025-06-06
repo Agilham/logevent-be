@@ -6,7 +6,7 @@ import vendorRepository from '../../repositories/vendor.repository'; // Adjust p
 import { DeepMockProxy } from 'jest-mock-extended';
 
 // Mock the vendorRepository module
-jest.mock('../../src/repositories/vendor.repository');
+jest.mock('../../repositories/vendor.repository');
 
 describe('VendorController', () => {
   let mockRequest: Partial<Request>;

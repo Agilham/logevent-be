@@ -6,7 +6,7 @@ import WishlistRepository from '../../repositories/wishlist.repository'; // Adju
 import { DeepMockProxy } from 'jest-mock-extended';
 
 // Mock the WishlistRepository module
-jest.mock('../../src/repositories/wishlist.repository');
+jest.mock('../../repositories/wishlist.repository');
 
 describe('WishlistController', () => {
   let mockRequest: Partial<Request>;

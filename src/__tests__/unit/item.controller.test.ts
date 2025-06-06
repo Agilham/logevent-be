@@ -6,7 +6,7 @@ import itemRepository from '../../repositories/item.repository'; // Adjust path 
 import { DeepMockProxy } from 'jest-mock-extended';
 
 // Mock the itemRepository module
-jest.mock('../../src/repositories/item.repository');
+jest.mock('../../repositories/item.repository');
 
 describe('ItemController', () => {
   let mockRequest: Partial<Request>;

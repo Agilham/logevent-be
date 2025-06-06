@@ -6,7 +6,7 @@ import bundleRepository from '../../repositories/bundle.repository'; // Adjust p
 import { DeepMockProxy } from 'jest-mock-extended';
 
 // Mock the bundleRepository module
-jest.mock('../../src/repositories/bundle.repository');
+jest.mock('../../repositories/bundle.repository');
 
 describe('BundleController', () => {
   let mockRequest: Partial<Request>;
