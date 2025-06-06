@@ -3,7 +3,7 @@
 import { Request, Response } from 'express';
 import AdminController from '../../controllers/admin.controller'; // Adjust path if needed
 import adminRepository from '../../repositories/admin.repository'; // Adjust path if needed
-import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
+import { DeepMockProxy } from 'jest-mock-extended';
 
 // Mock the adminRepository module
 jest.mock('../../repositories/admin.repository');
@@ -21,7 +21,7 @@ describe('AdminController', () => {
       end: jest.fn(),
     };
 
-    mockAdminRepository = mockDeep<typeof adminRepository>();
+    mockAdminRepository = adminRepository as DeepMockProxy<typeof adminRepository>;
 
     jest.clearAllMocks();
   });
