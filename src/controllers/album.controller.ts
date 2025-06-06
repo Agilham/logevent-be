@@ -75,20 +75,30 @@ class AlbumController {
         return res.status(404).json({ message: "Album not found" });
       }
 
-      const { eventId, productId, albumImage } = req.body;
-      if (album.albumImage && !albumImage) {
-        await cloudinaryUtils.deleteFile(album.albumImage);
+      const { eventId, productId } = req.body;
+      let { albumImage } = req.body;
+
+      let finalAlbumImageUrl: string | null = album.albumImage;
+
+      if (typeof albumImage === 'string' && albumImage) {
+        const newUploadedUrl = await cloudinaryUtils.uploadFile(albumImage);
+        if (album.albumImage) {
+          await cloudinaryUtils.deleteFile(album.albumImage);
+        }
+        finalAlbumImageUrl = newUploadedUrl;
       }
 
-      const albumImageUrl = albumImage ? await cloudinaryUtils.uploadFile(albumImage) : null;
-      if (album.albumImage && albumImageUrl) {
-        await cloudinaryUtils.deleteFile(album.albumImage);
+      else if (req.body.hasOwnProperty('albumImage') && albumImage === null) {
+        if (album.albumImage) {
+          await cloudinaryUtils.deleteFile(album.albumImage);
+        }
+        finalAlbumImageUrl = null;
       }
 
       const updatedAlbum = await albumRepository.updateAlbum(id, {
-        eventId: eventId ?? album.eventId,
-        productId: productId ?? album.productId,
-        albumImage: albumImageUrl ?? album.albumImage
+        eventId: req.body.hasOwnProperty('eventId') ? eventId : album.eventId,
+        productId: req.body.hasOwnProperty('productId') ? productId : album.productId,
+        albumImage: finalAlbumImageUrl
       });
 
       res.status(200).json(updatedAlbum);

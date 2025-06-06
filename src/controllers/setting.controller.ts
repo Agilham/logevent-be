@@ -27,17 +27,18 @@ class SettingController {
       }
 
       let { description, youtubeUrl, vendorCount, productCount, orderCount } = req.body;
-      if (youtubeUrl?.includes('/watch?v=')) {
+
+      if (typeof youtubeUrl === 'string' && youtubeUrl.includes('/watch?v=')) {
         const videoId = youtubeUrl.split('/watch?v=')[1];
         youtubeUrl = `https://www.youtube.com/embed/${videoId}`;
       }
 
       const updatedSetting = await settingRepository.updateSetting(setting.id, {
-        description: description ?? setting.description,
-        youtubeUrl: youtubeUrl ?? setting.youtubeUrl,
-        vendorCount: vendorCount ?? setting.vendorCount,
-        productCount: productCount ?? setting.productCount,
-        orderCount: orderCount ?? setting.orderCount
+        description: req.body.hasOwnProperty('description') ? description : setting.description,
+        youtubeUrl: req.body.hasOwnProperty('youtubeUrl') ? youtubeUrl : setting.youtubeUrl,
+        vendorCount: req.body.hasOwnProperty('vendorCount') ? vendorCount : setting.vendorCount,
+        productCount: req.body.hasOwnProperty('productCount') ? productCount : setting.productCount,
+        orderCount: req.body.hasOwnProperty('orderCount') ? orderCount : setting.orderCount
       });
 
       res.status(200).json(updatedSetting);
