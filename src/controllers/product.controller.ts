@@ -100,15 +100,15 @@ class ProductController {
       }
 
       const updatedProduct = await productRepository.updateProduct(id, {
-        vendorId: vendorId || product.vendorId,
-        categoryId: categoryId || product.categoryId,
-        name: name || product.name,
-        specification: specification || product.specification,
-        rate: rate || product.rate,
-        price: price || product.price,
-        capacity: capacity || product.capacity,
-        description: description || product.description,
-        productImage: productImageUrl || product.productImage
+        vendorId: vendorId ?? product.vendorId,
+        categoryId: categoryId ?? product.categoryId,
+        name: name ?? product.name,
+        specification: specification ?? product.specification,
+        rate: rate ?? product.rate,
+        price: price ?? product.price,
+        capacity: capacity ?? product.capacity,
+        description: description ?? product.description,
+        productImage: productImageUrl ?? product.productImage
       });
 
       res.status(200).json(updatedProduct);

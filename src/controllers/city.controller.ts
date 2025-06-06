@@ -50,7 +50,7 @@ class CityController {
       }
 
       const { name } = req.body;
-      const updatedCity = await cityRepository.updateCity(id, { name: name || city.name });
+      const updatedCity = await cityRepository.updateCity(id, { name: name ?? city.name });
       
       res.status(200).json(updatedCity);
     } catch (error: any) {

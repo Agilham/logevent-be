@@ -59,14 +59,14 @@ class VendorController {
 
       const { cityId, email, name, phone, address, instagram, socialMedia, documentUrl } = req.body;
       const updatedVendor = await vendorRepository.updateVendor(id, {
-        cityId: cityId || vendor.cityId,
-        email: email || vendor.email,
-        name: name || vendor.name,
-        phone: phone || vendor.phone,
-        address: address || vendor.address,
-        instagram: instagram || vendor.instagram,
-        socialMedia: socialMedia || vendor.socialMedia,
-        documentUrl: documentUrl || vendor.documentUrl
+        cityId: cityId ?? vendor.cityId,
+        email: email ?? vendor.email,
+        name: name ?? vendor.name,
+        phone: phone ?? vendor.phone,
+        address: address ?? vendor.address,
+        instagram: instagram ?? vendor.instagram,
+        socialMedia: socialMedia ?? vendor.socialMedia,
+        documentUrl: documentUrl ?? vendor.documentUrl
       });
 
       res.status(200).json(updatedVendor);

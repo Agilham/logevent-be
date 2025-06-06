@@ -8,7 +8,7 @@ import prisma from './prisma';
 import { ItemEventDetail, ItemProductDetail, OrderDetail} from './types';
 
 class NodemailerUtils {
-  private transporter = nodemailer.createTransport({
+  private readonly transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: process.env.EMAIL_USER,
@@ -42,7 +42,6 @@ class NodemailerUtils {
     return this.sendMail(mailOptions);
   }
 
-  // TODO: Fix Send New Order Email
   async sendNewOrderEmail(email: string, order: OrderDetail, items: (ItemEventDetail | ItemProductDetail)[]) {
     const invoiceHtml = await invoiceUtils.generateInvoiceBillHtml(order, items);
 
@@ -75,7 +74,6 @@ class NodemailerUtils {
     });
   }
 
-  // TODO: Fix Send Paid Order Email
   async sendPaidOrderEmail(email: string, order: OrderDetail, items: (ItemEventDetail | ItemProductDetail)[]) {
     const invoiceHtml = await invoiceUtils.generateInvoicePaidHtml(order, items);
 
@@ -89,7 +87,6 @@ class NodemailerUtils {
     return this.sendMail(mailOptions);
   }
 
-  // TODO: Fix Send Cancel Order Email
   async sendCancelOrderEmail(email: string, order: OrderDetail, cancelMessage: string) {
     const mailOptions = {
       from: process.env.EMAIL_USER,

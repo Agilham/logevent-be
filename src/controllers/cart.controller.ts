@@ -114,10 +114,10 @@ class CartController {
 
       const { userId, type, cartDate, cartStatus } = req.body;
       const updatedCart = await cartRepository.updateCart(id, {
-        userId: userId || cart.userId,
-        type: type || cart.type,
-        cartDate: cartDate || cart.cartDate,
-        cartStatus: cartStatus || cart.cartStatus
+        userId: userId ?? cart.userId,
+        type: type ?? cart.type,
+        cartDate: cartDate ?? cart.cartDate,
+        cartStatus: cartStatus ?? cart.cartStatus
       });
 
       res.status(200).json(updatedCart);

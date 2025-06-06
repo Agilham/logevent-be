@@ -85,11 +85,11 @@ class ItemController {
 
       const { cartId, eventId, productId, duration, quantity } = req.body;
       const updatedItem = await itemRepository.updateItem(id, {
-        cartId: cartId || item.cartId,
-        eventId: eventId || item.eventId,
-        productId: productId || item.productId,
-        duration: duration || item.duration,
-        quantity: quantity || item.quantity
+        cartId: cartId ?? item.cartId,
+        eventId: eventId ?? item.eventId,
+        productId: productId ?? item.productId,
+        duration: duration ?? item.duration,
+        quantity: quantity ?? item.quantity
       });
 
       res.status(200).json(updatedItem);

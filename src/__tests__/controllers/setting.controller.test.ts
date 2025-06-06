@@ -79,7 +79,7 @@ describe('SettingController', () => {
         productCount: 25,
         orderCount: 35
       };
-      const expectedYoutubeUrl = 'https://www.youtube.com/embed/$VIDEOID123'; // The expected transformed URL
+      const expectedYoutubeUrl = 'https://www.youtube.com/embed/VIDEOID123'; // The expected transformed URL
       const updatedSetting = { ...existingSetting, ...mockRequest.body, youtubeUrl: expectedYoutubeUrl };
 
       mockSettingRepository.readSetting.mockResolvedValue(existingSetting as any);

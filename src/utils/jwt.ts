@@ -4,7 +4,7 @@
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 
 class JwtUtils {
-  private secret: Secret;
+  private readonly secret: Secret;
 
   constructor(secret?: Secret) {
     this.secret = secret || (process.env.JWT_SECRET as Secret);

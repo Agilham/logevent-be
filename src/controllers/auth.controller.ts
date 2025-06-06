@@ -155,13 +155,13 @@ class AuthController {
 
       const hashedPassword = password ? await hash(password, 10) : null;
       const updatedUser = await userRepository.updateUser(id, {
-        name: name || user.name,
-        email: email || user.email,
-        password: hashedPassword || user.password,
-        phone: phone || user.phone,
-        picture: pictureUrl || user.picture,
-        isAdmin: isAdmin || user.isAdmin,
-        isVerified: isVerified || user.isVerified,
+        name: name ?? user.name,
+        email: email ?? user.email,
+        password: hashedPassword ?? user.password,
+        phone: phone ?? user.phone,
+        picture: pictureUrl ?? user.picture,
+        isAdmin: isAdmin ?? user.isAdmin,
+        isVerified: isVerified ?? user.isVerified,
       });
 
       res.status(200).json(updatedUser);
@@ -196,15 +196,13 @@ class AuthController {
       }
 
       let user = await userRepository.findUserByEmail(data.email);
-      if (!user) {
-        user = await userRepository.createUser({
-          email: data.email,
-          password: null,
-          name: data.name,
-          phone: null,
-          picture: null,
-        });
-      }
+      user ??= await userRepository.createUser({
+        email: data.email,
+        password: null,
+        name: data.name,
+        phone: null,
+        picture: null,
+      });
 
       const token = jwtUtils.sign({ id: user.id });
       const isVerified = user.isVerified;

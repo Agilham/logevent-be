@@ -74,8 +74,8 @@ class BundleController {
 
       const { eventId, productId } = req.body;
       const updatedBundle = await bundleRepository.updateBundle(id, {
-        eventId: eventId || bundle.eventId,
-        productId: productId || bundle.productId
+        eventId: eventId ?? bundle.eventId,
+        productId: productId ?? bundle.productId
       });
 
       res.status(200).json(updatedBundle);

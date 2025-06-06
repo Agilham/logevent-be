@@ -103,7 +103,7 @@ class ProductRepository {
 
     const detailedProducts = await Promise.all(productDetailsPromises);
     const filteredProducts = detailedProducts.filter(product => product.rating > 4.0);
-    const sortedProducts = filteredProducts.sort((a, b) => b.score - a.score);
+    const sortedProducts = [...filteredProducts].sort((a, b) => b.score - a.score);
     return sortedProducts.slice(0, 8);
   }
 

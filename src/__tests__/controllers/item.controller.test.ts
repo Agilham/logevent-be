@@ -201,7 +201,7 @@ describe('ItemController', () => {
 
     it('should update an item with status 200 when all fields are provided', async () => {
       mockRequest.params = { id: '1' };
-      const updateBody = { cartId: 11, eventId: null, productId: 200, duration: 7, quantity: 2 };
+      const updateBody = { cartId: 11, eventId: 200, productId: null, duration: 7, quantity: 2 };
       mockRequest.body = updateBody;
       const updatedItem = { ...existingItem, ...updateBody };
       mockItemRepository.findItemById.mockResolvedValue(existingItem as any);

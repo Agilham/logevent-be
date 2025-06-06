@@ -54,8 +54,8 @@ class FaqController {
 
       const { question, answer } = req.body;
       const updatedFaq = await faqRepository.updateFaq(id, {
-        question: question || faq.question,
-        answer: answer || faq.answer
+        question: question ?? faq.question,
+        answer: answer ?? faq.answer
       });
 
       res.status(200).json(updatedFaq);

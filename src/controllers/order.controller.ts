@@ -68,7 +68,6 @@ class OrderController {
     }
   }
 
-  // TODO: Fix Create Order
   async createOrder(req: Request, res: Response) {
     try {
       const { cartId, name, phone, address, notes, startDateString, endDateString } = req.body;
@@ -127,16 +126,16 @@ class OrderController {
 
       const { cartId, name, phone, address, notes, startDate, endDate, orderDate, orderTotal, orderStatus } = req.body;
       const updatedOrder = await orderRepository.updateOrder(id, {
-        cartId: cartId || order.cartId,
-        name: name || order.name,
-        phone: phone || order.phone,
-        address: address || order.address,
-        notes: notes || order.notes,
-        startDate: startDate || order.startDate,
-        endDate: endDate || order.endDate,
-        orderDate: orderDate || order.orderDate,
-        orderTotal: orderTotal || order.orderTotal,
-        orderStatus: orderStatus || order.orderStatus
+        cartId: cartId ?? order.cartId,
+        name: name ?? order.name,
+        phone: phone ?? order.phone,
+        address: address ?? order.address,
+        notes: notes ?? order.notes,
+        startDate: startDate ?? order.startDate,
+        endDate: endDate ?? order.endDate,
+        orderDate: orderDate ?? order.orderDate,
+        orderTotal: orderTotal ?? order.orderTotal,
+        orderStatus: orderStatus ?? order.orderStatus
       });
 
       res.status(200).json(updatedOrder);

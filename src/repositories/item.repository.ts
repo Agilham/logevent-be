@@ -95,7 +95,7 @@ class ItemRepository {
     }
 
     const review = await prisma.review.findFirst({ where: { itemId: item.id } });
-    const isReviewed = review ? true : false;
+    const isReviewed = !!review;
 
     return {
       id: item.id,
@@ -146,7 +146,7 @@ class ItemRepository {
     }
 
     const review = await prisma.review.findFirst({ where: { itemId: item.id } });
-    const isReviewed = review ? true : false;
+    const isReviewed = !!review;
 
     return {
       id: item.id,

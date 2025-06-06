@@ -67,7 +67,7 @@ describe('CartController', () => {
 
     it('should return 404 if cart not found for user ID', async () => {
       mockRequest.params = { userId: '999' };
-      mockCartRepository.findCartsByUserId.mockResolvedValue([]);
+      mockCartRepository.findCartsByUserId.mockResolvedValue(null as any);
 
       await CartController.readCartsByUserId(mockRequest as Request, mockResponse as Response);
 

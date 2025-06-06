@@ -21,7 +21,7 @@ class Middleware {
       
       next();
     } catch (error: any) {
-      return res.status(401).json({ message: error.message || "Invalid token" });
+      return res.status(401).json({ message: error.message ?? "Invalid token" });
     }
   }
 

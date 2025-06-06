@@ -73,9 +73,9 @@ class CategoryController {
 
       const { name, fee, type } = req.body;
       const updatedCategory = await categoryRepository.updateCategory(id, {
-        name: name || category.name,
-        fee: fee || category.fee,
-        type: type || category.type
+        name: name ?? category.name,
+        fee: fee ?? category.fee,
+        type: type ?? category.type
       });
       
       res.status(200).json(updatedCategory);

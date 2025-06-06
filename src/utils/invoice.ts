@@ -1,11 +1,9 @@
 // src/utils/invoice.ts
 
 // self-defined modules
-import { format } from 'path';
 import { ItemEventDetail, ItemProductDetail, OrderDetail} from './types';
 
 class InvoiceUtils {
-  // TODO: Fix Generate Bill Invoice HTML
   async generateInvoiceBillHtml(order: OrderDetail, items: (ItemEventDetail | ItemProductDetail)[]) {
     return `
       <!DOCTYPE html>
@@ -108,11 +106,14 @@ class InvoiceUtils {
                     </tr>
                   `;
                 } else {
-                  const totalPrice = item.duration !== null
-                  ? Math.ceil(item.productPrice * item.duration * (1 + item.categoryFee / 100))
-                  : item.quantity !== null
-                  ? Math.ceil(item.productPrice * item.quantity * (1 + item.categoryFee / 100))
-                  : Math.ceil(item.productPrice * this.calculateDaysBetweenDates(order.startDate, order.endDate) * (1 + item.categoryFee / 100));
+                  let totalPrice: number;
+                  if (item.duration !== null) {
+                    totalPrice = Math.ceil(item.productPrice * item.duration * (1 + item.categoryFee / 100));
+                  } else if (item.quantity !== null) {
+                    totalPrice = Math.ceil(item.productPrice * item.quantity * (1 + item.categoryFee / 100));
+                  } else {
+                    totalPrice = Math.ceil(item.productPrice * this.calculateDaysBetweenDates(order.startDate, order.endDate) * (1 + item.categoryFee / 100));
+                  }
 
                   return `
                     <tr>
@@ -131,15 +132,17 @@ class InvoiceUtils {
                             : `Rp ${item.productPrice.toLocaleString()}`
                         }
                       </td>
-                      <td>
-                        ${
-                          item.duration !== null
-                            ? item.duration + " Jam"
-                            : item.quantity !== null
-                            ? item.quantity + " Pcs"
-                            : this.calculateDaysBetweenDates(order.startDate, order.endDate) + " Hari"
+                      ${(() => {
+                        let jumlahValue;
+                        if (item.duration !== null) {
+                          jumlahValue = item.duration + " Jam";
+                        } else if (item.quantity !== null) {
+                          jumlahValue = item.quantity + " Pcs";
+                        } else {
+                          jumlahValue = this.calculateDaysBetweenDates(order.startDate, order.endDate) + " Hari";
                         }
-                      </td>
+                        return `<td>${jumlahValue}</td>`;
+                      })()}
                       <td>
                         ${
                           item.productId === 1
@@ -216,7 +219,6 @@ class InvoiceUtils {
     `;
   }
 
-  // TODO: Fix Generate Paid Invoice HTML
   async generateInvoicePaidHtml(order: OrderDetail, items: (ItemEventDetail | ItemProductDetail)[]) {
     return `
       <!DOCTYPE html>
@@ -319,11 +321,14 @@ class InvoiceUtils {
                     </tr>
                   `;
                 } else {
-                  const totalPrice = item.duration !== null
-                  ? Math.ceil(item.productPrice * item.duration * (1 + item.categoryFee / 100))
-                  : item.quantity !== null
-                  ? Math.ceil(item.productPrice * item.quantity * (1 + item.categoryFee / 100))
-                  : Math.ceil(item.productPrice * this.calculateDaysBetweenDates(order.startDate, order.endDate) * (1 + item.categoryFee / 100));
+                  let totalPrice: number;
+                  if (item.duration !== null) {
+                    totalPrice = Math.ceil(item.productPrice * item.duration * (1 + item.categoryFee / 100));
+                  } else if (item.quantity !== null) {
+                    totalPrice = Math.ceil(item.productPrice * item.quantity * (1 + item.categoryFee / 100));
+                  } else {
+                    totalPrice = Math.ceil(item.productPrice * this.calculateDaysBetweenDates(order.startDate, order.endDate) * (1 + item.categoryFee / 100));
+                  }
 
                   return `
                     <tr>
@@ -342,15 +347,17 @@ class InvoiceUtils {
                             : `Rp ${item.productPrice.toLocaleString()}`
                         }
                       </td>
-                      <td>
-                        ${
-                          item.duration !== null
-                            ? item.duration + " Jam"
-                            : item.quantity !== null
-                            ? item.quantity + " Pcs"
-                            : this.calculateDaysBetweenDates(order.startDate, order.endDate) + " Hari"
+                      ${(() => {
+                        let jumlahValue;
+                        if (item.duration !== null) {
+                          jumlahValue = item.duration + " Jam";
+                        } else if (item.quantity !== null) {
+                          jumlahValue = item.quantity + " Pcs";
+                        } else {
+                          jumlahValue = this.calculateDaysBetweenDates(order.startDate, order.endDate) + " Hari";
                         }
-                      </td>
+                        return `<td>${jumlahValue}</td>`;
+                      })()}
                       <td>
                         ${
                           item.productId === 1

@@ -49,29 +49,7 @@ class OrderRepository {
       throw new Error("Cart not found");
     }
 
-    const productIds: Set<number> = new Set();
-    if (cart.type === 'Event') {
-      const items = await prisma.item.findMany({
-        where: { cartId: cartId, eventId: { not: null } },
-        include: { event: true },
-      });
-      for (const item of items) {
-        if (item.eventId) {
-          const bundles = await prisma.bundle.findMany({ where: { eventId: item.eventId } });
-          bundles.forEach(bundle => productIds.add(bundle.productId));
-        }
-      }
-    } else if (cart.type === 'Product' || cart.type === 'Event Organizer') {
-      const items = await prisma.item.findMany({
-        where: { cartId: cartId, productId: { not: null } },
-        include: { product: true },
-      });
-      for (const item of items) {
-        if (item.productId) {
-          productIds.add(item.productId);
-        }
-      }
-    }
+    const productIds = await this.getProductIdsFromCart(cart);
 
     const upcomingOrders = await prisma.order.findMany({
       where: {
@@ -89,27 +67,69 @@ class OrderRepository {
       },
     });
 
-    const bookedDates: Set<string> = new Set();
-    for (const order of upcomingOrders) {
-      for (const orderItem of order.cart.items) {
-        const bundleProductIds = new Set<number>();
-        if (orderItem.eventId) {
-          const bundles = await prisma.bundle.findMany({ where: { eventId: orderItem.eventId } });
-          bundles.forEach(bundle => bundleProductIds.add(bundle.productId));
+    const bookedDates = await this.getBookedDatesFromOrders(upcomingOrders, productIds);
+
+    return Array.from(bookedDates);
+  }
+
+  private async getProductIdsFromCart(cart: any): Promise<Set<number>> {
+    const productIds: Set<number> = new Set();
+    if (cart.type === 'Event') {
+      const items = await prisma.item.findMany({
+        where: { cartId: cart.id, eventId: { not: null } },
+        include: { event: true },
+      });
+      for (const item of items) {
+        if (item.eventId) {
+          const bundles = await prisma.bundle.findMany({ where: { eventId: item.eventId } });
+          bundles.forEach(bundle => productIds.add(bundle.productId));
         }
-  
-        if ((orderItem.productId && productIds.has(orderItem.productId)) || 
-            [...bundleProductIds].some(id => productIds.has(id))) {
-          let currentDate = new Date(order.startDate);
-          while (currentDate <= order.endDate) {
-            bookedDates.add(format(toZonedTime(currentDate, 'Asia/Jakarta'), 'yyyy-MM-dd'));
-            currentDate.setDate(currentDate.getDate() + 1);
-          }
+      }
+    } else if (cart.type === 'Product' || cart.type === 'Event Organizer') {
+      const items = await prisma.item.findMany({
+        where: { cartId: cart.id, productId: { not: null } },
+        include: { product: true },
+      });
+      for (const item of items) {
+        if (item.productId) {
+          productIds.add(item.productId);
         }
       }
     }
+    return productIds;
+  }
 
-    return Array.from(bookedDates);
+  private async getBundleProductIds(eventId: number): Promise<Set<number>> {
+    const bundles = await prisma.bundle.findMany({ where: { eventId } });
+    return new Set(bundles.map(bundle => bundle.productId));
+  }
+
+  private async getBookedDatesFromOrders(upcomingOrders: any[], productIds: Set<number>): Promise<Set<string>> {
+    const bookedDates: Set<string> = new Set();
+    for (const order of upcomingOrders) {
+      for (const orderItem of order.cart.items) {
+        let bundleProductIds = new Set<number>();
+        if (orderItem.eventId) {
+          bundleProductIds = await this.getBundleProductIds(orderItem.eventId);
+        }
+
+        if (
+          (orderItem.productId && productIds.has(orderItem.productId)) ||
+          [...bundleProductIds].some(id => productIds.has(id))
+        ) {
+          this.addBookedDates(bookedDates, order.startDate, order.endDate);
+        }
+      }
+    }
+    return bookedDates;
+  }
+
+  private addBookedDates(bookedDates: Set<string>, startDate: Date, endDate: Date) {
+    let currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      bookedDates.add(format(toZonedTime(currentDate, 'Asia/Jakarta'), 'yyyy-MM-dd'));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
   }
 
   async findOrderDetailById(id: number): Promise<OrderDetail | null> {
@@ -170,36 +190,46 @@ class OrderRepository {
   }
 
   async calculateOrderTotal(cartId: number, startDate: Date, endDate: Date): Promise<number> {
-    let orderTotal = 0;
     const orderRange = 1 + Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
     const items = await prisma.item.findMany({ where: { cartId } });
 
+    let orderTotal = 0;
     for (const item of items) {
       if (item.eventId) {
-        const event = await prisma.event.findUnique({
-          where: { id: item.eventId },
-          include: { category: true },
-        });
-        const feeMultiplier = event ? 1 + (event.category.fee / 100) : 1;
-        orderTotal += event ? event.price * orderRange * feeMultiplier : 0;
+        orderTotal += await this.calculateEventItemTotal(item, orderRange);
       } else if (item.productId) {
-        const product = await prisma.product.findUnique({
-          where: { id: item.productId },
-          include: { category: true },
-        });
-        const feeMultiplier = product ? 1 + (product.category.fee / 100) : 1;
-        if (item.duration) {
-          orderTotal += product ? product.price * item.duration * feeMultiplier : 0;
-        } else if (item.quantity) {
-          orderTotal += product ? product.price * item.quantity * feeMultiplier : 0;
-        } else {
-          orderTotal += product ? product.price * orderRange * feeMultiplier : 0;
-        }
+        orderTotal += await this.calculateProductItemTotal(item, orderRange);
       }
     }
 
     return Math.ceil(orderTotal);
-  };
+  }
+
+  private async calculateEventItemTotal(item: any, orderRange: number): Promise<number> {
+    const event = await prisma.event.findUnique({
+      where: { id: item.eventId },
+      include: { category: true },
+    });
+    if (!event) return 0;
+    const feeMultiplier = 1 + (event.category.fee / 100);
+    return event.price * orderRange * feeMultiplier;
+  }
+
+  private async calculateProductItemTotal(item: any, orderRange: number): Promise<number> {
+    const product = await prisma.product.findUnique({
+      where: { id: item.productId },
+      include: { category: true },
+    });
+    if (!product) return 0;
+    const feeMultiplier = 1 + (product.category.fee / 100);
+    if (item.duration) {
+      return product.price * item.duration * feeMultiplier;
+    } else if (item.quantity) {
+      return product.price * item.quantity * feeMultiplier;
+    } else {
+      return product.price * orderRange * feeMultiplier;
+    }
+  }
 }
 
 export default new OrderRepository();

@@ -50,7 +50,7 @@ class AdminController {
       }
 
       const { email } = req.body;
-      const updatedAdmin = await adminRepository.updateAdmin(id, { email: email || admin.email });
+      const updatedAdmin = await adminRepository.updateAdmin(id, { email: email ?? admin.email });
       
       res.status(200).json(updatedAdmin);
     } catch (error: any) {

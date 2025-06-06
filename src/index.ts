@@ -24,11 +24,11 @@ import visitController from './controllers/visit.controller';
 import wishlistController from './controllers/wishlist.controller';
 
 const app = express();
-const PORT = process.env.EXPRESS_APP_PORT;
+const PORT = process.env.EXPRESS_APP_PORT ?? 5000; // Provide a default port for testing
 
-app.use(cors({ 
-  origin: process.env.REACT_APP_URL, 
-  credentials: true 
+app.use(cors({
+  origin: process.env.REACT_APP_URL,
+  credentials: true
 }));
 app.use(express.json({ limit: '2mb' }));
 
@@ -58,6 +58,11 @@ app.get('/metrics', async (_req, res) => {
   res.end(await register.metrics());
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Conditionally start the server only if not in a test environment
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+export default app;

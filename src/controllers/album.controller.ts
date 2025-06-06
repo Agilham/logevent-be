@@ -86,9 +86,9 @@ class AlbumController {
       }
 
       const updatedAlbum = await albumRepository.updateAlbum(id, {
-        eventId: eventId || album.eventId,
-        productId: productId || album.productId,
-        albumImage: albumImageUrl || album.albumImage
+        eventId: eventId ?? album.eventId,
+        productId: productId ?? album.productId,
+        albumImage: albumImageUrl ?? album.albumImage
       });
 
       res.status(200).json(updatedAlbum);

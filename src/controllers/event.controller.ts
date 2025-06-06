@@ -58,12 +58,12 @@ class EventController {
 
       const { categoryId, name, price, capacity, description, eventImage } = req.body;
       const updatedEvent = await eventRepository.updateEvent(id, {
-        categoryId: categoryId || event.categoryId,
-        name: name || event.name,
-        price: price || event.price,
-        capacity: capacity || event.capacity,
-        description: description || event.description,
-        eventImage: eventImage || event.eventImage
+        categoryId: categoryId ?? event.categoryId,
+        name: name ?? event.name,
+        price: price ?? event.price,
+        capacity: capacity ?? event.capacity,
+        description: description ?? event.description,
+        eventImage: eventImage ?? event.eventImage
       });
 
       res.status(200).json(updatedEvent);
